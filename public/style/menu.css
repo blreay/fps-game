@@ -1,0 +1,19 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: 'Courier New', monospace; background: #0a0c08; color: #fff; overflow: hidden; min-height: 100vh; }
+#menu-bg { position: fixed; inset: 0; background: radial-gradient(ellipse at 20% 50%, rgba(50,80,30,0.4) 0%, transparent 60%), radial-gradient(ellipse at 80% 50%, rgba(80,60,20,0.3) 0%, transparent 60%), linear-gradient(to bottom, #0a0c08 0%, #1a2010 50%, #0a0c08 100%); }
+#menu-bg::before { content: ''; position: absolute; inset: 0; background-image: repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.05) 2px, rgba(0,0,0,0.05) 4px); }
+#menu { position: relative; z-index: 1; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 40px; padding: 40px; }
+#title-block { text-align: center; }
+#game-subtitle { font-size: 11px; letter-spacing: 6px; color: #c8a96e; margin-bottom: 12px; }
+#game-title { font-size: 72px; font-weight: bold; letter-spacing: 8px; color: #fff; text-shadow: 0 0 40px rgba(200,169,110,0.5), 0 2px 4px rgba(0,0,0,0.8); }
+#game-tagline { font-size: 13px; letter-spacing: 3px; color: #888; margin-top: 12px; }
+#menu-nav { display: flex; flex-direction: column; gap: 12px; align-items: center; }
+.menu-btn { width: 240px; padding: 14px 0; background: transparent; border: 1px solid rgba(200,169,110,0.5); color: #c8a96e; font-family: 'Courier New', monospace; font-size: 13px; letter-spacing: 3px; cursor: pointer; transition: all 0.2s; }
+.menu-btn:hover { background: rgba(200,169,110,0.1); border-color: #c8a96e; color: #fff; }
+.menu-btn.primary { border-color: #c8a96e; background: rgba(200,169,110,0.08); }
+#settings-panel { display: flex; flex-direction: column; gap: 14px; background: rgba(0,0,0,0.6); border: 1px solid rgba(200,169,110,0.3); padding: 20px 30px; min-width: 300px; }
+#settings-panel.hidden { display: none; }
+#settings-panel label { display: flex; flex-direction: column; gap: 6px; color: #aaa; font-size: 12px; letter-spacing: 1px; }
+#settings-panel input[type=range] { accent-color: #c8a96e; }
+#controls-hint { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: center; max-width: 600px; }
+#controls-hint span { font-size: 11px; color: #666; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 2px; }

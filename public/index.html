@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>混合战场 — FPS</title>
+  <link rel="stylesheet" href="style/menu.css">
+</head>
+<body>
+  <div id="menu-bg"></div>
+  <div id="menu">
+    <div id="title-block">
+      <div id="game-subtitle">TACTICAL FPS</div>
+      <h1 id="game-title">混合战场</h1>
+      <div id="game-tagline">消灭所有敌人，完成任务</div>
+    </div>
+    <nav id="menu-nav">
+      <button class="menu-btn primary" onclick="location.href='game.html'">开始战斗</button>
+      <button class="menu-btn" onclick="toggleSettings()">游戏设置</button>
+    </nav>
+    <div id="settings-panel" class="hidden">
+      <label>鼠标灵敏度
+        <input type="range" id="sensitivity" min="0.5" max="3" step="0.1" value="1">
+        <span id="sensitivity-val">1.0</span>
+      </label>
+      <label>音量
+        <input type="range" id="volume" min="0" max="1" step="0.05" value="0.7">
+        <span id="volume-val">70%</span>
+      </label>
+    </div>
+    <div id="controls-hint">
+      <span>WASD 移动</span><span>空格 跳跃</span><span>Shift 冲刺</span>
+      <span>鼠标 瞄准</span><span>左键 射击</span><span>右键 ADS</span>
+      <span>R 换弹</span><span>1/2/3 切武器</span><span>ESC 暂停</span>
+    </div>
+  </div>
+  <script>
+    function toggleSettings() { document.getElementById('settings-panel').classList.toggle('hidden'); }
+    document.getElementById('sensitivity').addEventListener('input', e => {
+      document.getElementById('sensitivity-val').textContent = parseFloat(e.target.value).toFixed(1);
+      localStorage.setItem('fps_sensitivity', e.target.value);
+    });
+    document.getElementById('volume').addEventListener('input', e => {
+      document.getElementById('volume-val').textContent = Math.round(e.target.value * 100) + '%';
+      localStorage.setItem('fps_volume', e.target.value);
+    });
+    const savedSens = localStorage.getItem('fps_sensitivity');
+    const savedVol = localStorage.getItem('fps_volume');
+    if (savedSens) { document.getElementById('sensitivity').value = savedSens; document.getElementById('sensitivity-val').textContent = parseFloat(savedSens).toFixed(1); }
+    if (savedVol) { document.getElementById('volume').value = savedVol; document.getElementById('volume-val').textContent = Math.round(savedVol * 100) + '%'; }
+  </script>
+</body>
+</html>
