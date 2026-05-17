@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <title>FPS — 混合战场</title>
+  <link rel="stylesheet" href="style/hud.css">
+  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/",
+      "cannon-es": "https://cdn.jsdelivr.net/npm/cannon-es@0.20.0/dist/cannon-es.js"
+    }
+  }
+  </script>
+</head>
+<body>
+  <canvas id="game-canvas"></canvas>
+  <div id="hud">
+    <div id="minimap-container">
+      <canvas id="minimap" width="150" height="150"></canvas>
+      <div id="kill-progress">0 / 15</div>
+    </div>
+    <div id="crosshair"><span></span><span></span><span></span><span></span></div>
+    <div id="stats-bar">
+      <div id="health-block">
+        <div class="bar-label">HP</div>
+        <div class="bar-track"><div id="health-fill" class="bar-fill health"></div></div>
+        <div id="health-num">100</div>
+      </div>
+      <div id="stamina-block">
+        <div class="bar-label">SP</div>
+        <div class="bar-track"><div id="stamina-fill" class="bar-fill stamina"></div></div>
+      </div>
+      <div id="weapon-block">
+        <div id="weapon-name">—</div>
+        <div id="ammo-display"><span id="ammo-cur">—</span> / <span id="ammo-res">—</span></div>
+      </div>
+    </div>
+    <div id="kill-feed"></div>
+    <div id="hit-marker"></div>
+    <div id="damage-overlay"></div>
+  </div>
+  <div id="screen-lock" class="screen">
+    <h2>点击进入游戏</h2>
+    <p>鼠标将被锁定，按 ESC 暂停</p>
+    <button id="btn-enter">进入战场</button>
+  </div>
+  <div id="screen-pause" class="screen hidden">
+    <h2>暂停</h2>
+    <button id="btn-resume">继续</button>
+    <button id="btn-menu">返回主菜单</button>
+  </div>
+  <div id="screen-dead" class="screen hidden">
+    <h2>YOU DIED</h2>
+    <button id="btn-retry">重玩</button>
+    <button id="btn-menu-dead">主菜单</button>
+  </div>
+  <div id="screen-win" class="screen hidden">
+    <h2>任务完成</h2>
+    <div id="win-stats"></div>
+    <button id="btn-menu-win">主菜单</button>
+  </div>
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>

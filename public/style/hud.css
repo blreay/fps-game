@@ -1,0 +1,43 @@
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #000; overflow: hidden; font-family: 'Courier New', monospace; }
+#game-canvas { position: fixed; inset: 0; width: 100%; height: 100%; }
+#hud { position: fixed; inset: 0; pointer-events: none; user-select: none; }
+#minimap-container { position: absolute; top: 16px; right: 16px; width: 150px; }
+#minimap { border: 1px solid rgba(0, 255, 120, 0.5); border-radius: 4px; background: rgba(0, 0, 0, 0.6); display: block; }
+#kill-progress { text-align: center; color: #00ff78; font-size: 11px; letter-spacing: 2px; margin-top: 4px; }
+#crosshair { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform: translate(-50%, -50%); }
+#crosshair span { position: absolute; background: rgba(255,255,255,0.9); transition: all 0.05s; }
+#crosshair span:nth-child(1) { width: 2px; height: 8px; top: -14px; left: -1px; }
+#crosshair span:nth-child(2) { width: 2px; height: 8px; top: 6px; left: -1px; }
+#crosshair span:nth-child(3) { width: 8px; height: 2px; left: -14px; top: -1px; }
+#crosshair span:nth-child(4) { width: 8px; height: 2px; left: 6px; top: -1px; }
+#crosshair.ads span:nth-child(1) { top: -6px; }
+#crosshair.ads span:nth-child(2) { top: 4px; }
+#crosshair.ads span:nth-child(3) { left: -6px; }
+#crosshair.ads span:nth-child(4) { left: 4px; }
+#stats-bar { position: absolute; bottom: 16px; left: 0; right: 0; display: flex; align-items: flex-end; gap: 24px; padding: 0 20px; }
+.bar-label { color: #aaa; font-size: 10px; letter-spacing: 1px; margin-bottom: 3px; }
+.bar-track { width: 120px; height: 4px; background: rgba(255,255,255,0.15); border-radius: 2px; }
+.bar-fill { height: 100%; border-radius: 2px; transition: width 0.2s; }
+.bar-fill.health { background: #00cc44; width: 100%; }
+.bar-fill.stamina { background: #3399ff; width: 100%; }
+#health-num { color: #fff; font-size: 12px; margin-top: 2px; }
+#weapon-block { margin-left: auto; text-align: right; }
+#weapon-name { color: #c8a96e; font-size: 13px; letter-spacing: 1px; }
+#ammo-display { color: #fff; font-size: 18px; font-weight: bold; }
+#ammo-display #ammo-res { color: #888; font-size: 13px; }
+#kill-feed { position: absolute; top: 180px; right: 16px; display: flex; flex-direction: column; gap: 4px; align-items: flex-end; }
+.kill-entry { background: rgba(0,0,0,0.6); color: #ff4444; padding: 3px 8px; font-size: 11px; border-left: 2px solid #ff4444; animation: fadeOut 3s forwards; }
+@keyframes fadeOut { 0%{opacity:1} 70%{opacity:1} 100%{opacity:0} }
+#hit-marker { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 20px; height: 20px; opacity: 0; transition: opacity 0.1s; }
+#hit-marker.active { opacity: 1; }
+#hit-marker::before, #hit-marker::after { content: ''; position: absolute; background: #ff4444; }
+#hit-marker::before { width: 100%; height: 2px; top: 50%; transform: translateY(-50%); }
+#hit-marker::after { width: 2px; height: 100%; left: 50%; transform: translateX(-50%); }
+#damage-overlay { position: absolute; inset: 0; background: radial-gradient(ellipse at center, transparent 50%, rgba(200,0,0,0.5) 100%); opacity: 0; pointer-events: none; transition: opacity 0.15s; }
+#damage-overlay.active { opacity: 1; }
+.screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.85); color: #fff; gap: 16px; pointer-events: all; }
+.screen.hidden { display: none; }
+.screen h2 { font-size: 36px; letter-spacing: 4px; color: #c8a96e; }
+.screen button { padding: 10px 32px; font-size: 14px; letter-spacing: 2px; background: transparent; border: 1px solid #c8a96e; color: #c8a96e; cursor: pointer; transition: all 0.2s; }
+.screen button:hover { background: #c8a96e; color: #000; }
