@@ -14,8 +14,31 @@ let gameState = 'menu';
 let killCount = 0;
 const TOTAL_ENEMIES = 15;
 
+let _ready = false;
+
 async function init() {
-  renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('game-canvas'), antialias: true });
+  // Register UI event listeners first so buttons always work
+  document.getElementById('btn-enter').addEventListener('click', startGame);
+  document.getElementById('btn-resume').addEventListener('click', resumeGame);
+  document.getElementById('btn-retry').addEventListener('click', () => location.reload());
+  document.getElementById('btn-menu').addEventListener('click', () => location.href = '/');
+  document.getElementById('btn-menu-dead').addEventListener('click', () => location.href = '/');
+  document.getElementById('btn-menu-win').addEventListener('click', () => location.href = '/');
+  document.addEventListener('pointerlockchange', () => {
+    if (!document.pointerLockElement && gameState === 'playing') pauseGame();
+  });
+  window.addEventListener('resize', onResize);
+
+  const btnEnter = document.getElementById('btn-enter');
+  btnEnter.textContent = '加载中...';
+  btnEnter.disabled = true;
+
+  try {
+    renderer = new THREE.WebGLRenderer({ canvas: document.getElementById('game-canvas'), antialias: true });
+  } catch (e) {
+    document.getElementById('screen-lock').innerHTML = '<h2 style="color:red">WebGL 不可用</h2><p>' + e.message + '</p>';
+    return;
+  }
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.shadowMap.enabled = true;
@@ -51,20 +74,14 @@ async function init() {
   enemyManager.spawnFromConfig(levelData);
   await audio.loadSounds(weaponsData);
 
-  document.getElementById('btn-enter').addEventListener('click', startGame);
-  document.getElementById('btn-resume').addEventListener('click', resumeGame);
-  document.getElementById('btn-retry').addEventListener('click', () => location.reload());
-  document.getElementById('btn-menu').addEventListener('click', () => location.href = '/');
-  document.getElementById('btn-menu-dead').addEventListener('click', () => location.href = '/');
-  document.getElementById('btn-menu-win').addEventListener('click', () => location.href = '/');
-  document.addEventListener('pointerlockchange', () => {
-    if (!document.pointerLockElement && gameState === 'playing') pauseGame();
-  });
-  window.addEventListener('resize', onResize);
   renderer.setAnimationLoop(gameLoop);
+  _ready = true;
+  btnEnter.textContent = '进入战场';
+  btnEnter.disabled = false;
 }
 
 function startGame() {
+  if (!_ready) return;
   document.getElementById('screen-lock').classList.add('hidden');
   renderer.domElement.requestPointerLock();
   gameState = 'playing';
@@ -149,4 +166,8 @@ function onResize() {
   player.camera.updateProjectionMatrix();
 }
 
-init().catch(console.error);
+init().catch(err => {
+  console.error(err);
+  const el = document.getElementById('screen-lock');
+  if (el) el.innerHTML = `<h2 style="color:#ff4444">加载失败</h2><p style="color:#aaa;max-width:600px;word-break:break-all">${err.message}<br><br>${err.stack || ''}</p><button onclick="location.reload()" style="margin-top:20px;padding:8px 24px;border:1px solid #c8a96e;background:transparent;color:#c8a96e;cursor:pointer">重试</button>`;
+});

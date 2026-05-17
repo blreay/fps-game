@@ -6,6 +6,7 @@ export class AudioManager {
 
   _load(id, src, options = {}) {
     if (this._sounds[id]) return;
+    if (typeof Howl === 'undefined') return;
     this._sounds[id] = new Howl({
       src: [src],
       volume: options.volume ?? 0.7,
@@ -44,12 +45,15 @@ export class AudioManager {
   playDeath() { if (this._bgm) this._bgm.stop(); this._play('death_music'); }
 
   playMusic(src) {
+    if (typeof Howl === 'undefined') return;
     if (this._bgm) this._bgm.stop();
     this._bgm = new Howl({ src: [src], loop: true, volume: 0.3 });
     this._bgm.play();
   }
 
-  setListenerPosition(pos) { Howler.pos(pos.x, pos.y || 0, pos.z); }
+  setListenerPosition(pos) {
+    if (typeof Howler !== 'undefined') Howler.pos(pos.x, pos.y || 0, pos.z);
+  }
 
   _play(id) { const s = this._sounds[id]; if (s) s.play(); }
 
