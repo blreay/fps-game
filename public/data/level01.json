@@ -1,0 +1,25 @@
+{
+  "id":"level01","name":"混合战场",
+  "playerSpawn":{"x":0,"y":2,"z":0},
+  "enemies":[
+    {"type":"infantry","x":20,"y":0,"z":10},{"type":"infantry","x":25,"y":0,"z":-5},
+    {"type":"infantry","x":18,"y":0,"z":20},{"type":"infantry","x":30,"y":0,"z":15},
+    {"type":"infantry","x":15,"y":0,"z":-15},{"type":"heavy","x":35,"y":0,"z":5},
+    {"type":"infantry","x":-20,"y":0,"z":30},{"type":"infantry","x":-15,"y":0,"z":40},
+    {"type":"infantry","x":-25,"y":0,"z":25},{"type":"infantry","x":-30,"y":0,"z":45},
+    {"type":"sniper","x":-40,"y":5,"z":35},{"type":"infantry","x":50,"y":0,"z":-30},
+    {"type":"infantry","x":60,"y":0,"z":-20},{"type":"infantry","x":55,"y":0,"z":-40},
+    {"type":"heavy","x":65,"y":0,"z":-35}
+  ],
+  "pickups":[
+    {"type":"medkit","x":10,"y":0.5,"z":0},{"type":"medkit","x":-10,"y":0.5,"z":20},
+    {"type":"medkit","x":40,"y":0.5,"z":-10},{"type":"ammo","x":5,"y":0.5,"z":-10},
+    {"type":"ammo","x":-5,"y":0.5,"z":15},{"type":"ammo","x":25,"y":0.5,"z":-20},
+    {"type":"ammo","x":-20,"y":0.5,"z":50},{"type":"ammo","x":50,"y":0.5,"z":-50}
+  ],
+  "patrolPoints":[
+    [{"x":18,"z":10},{"x":25,"z":5},{"x":22,"z":-5},{"x":15,"z":-10}],
+    [{"x":-15,"z":30},{"x":-25,"z":35},{"x":-30,"z":25},{"x":-20,"z":20}],
+    [{"x":50,"z":-25},{"x":60,"z":-30},{"x":55,"z":-40},{"x":45,"z":-35}]
+  ]
+}
