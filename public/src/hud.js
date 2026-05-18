@@ -13,6 +13,10 @@ export class HUD {
     this.minimap = document.getElementById('minimap');
     this.minimapCtx = this.minimap.getContext('2d');
     this.crosshair = document.getElementById('crosshair');
+    this.shipHealthBar = document.getElementById('ship-health-fill');
+    this.shipHealthNum = document.getElementById('ship-health-num');
+    this.waveIndicator = document.getElementById('wave-indicator');
+    this.turretPrompt = document.getElementById('turret-prompt');
     this._hitTimeout = null;
     this._damageTimeout = null;
   }
@@ -83,5 +87,21 @@ export class HUD {
     el.textContent = `KILLED ${labels[enemyType] || enemyType}`;
     this.killFeed.appendChild(el);
     setTimeout(() => el.remove(), 3100);
+  }
+
+  updateNaval(shipHealth, maxShipHealth, waveNum, turretName) {
+    if (this.shipHealthBar) {
+      const pct = shipHealth / maxShipHealth;
+      this.shipHealthBar.style.width = `${pct * 100}%`;
+      this.shipHealthBar.style.background = pct > 0.5 ? '#4488cc' : pct > 0.25 ? '#cc8844' : '#cc4444';
+      this.shipHealthNum.textContent = Math.ceil(shipHealth);
+    }
+    if (this.waveIndicator) {
+      this.waveIndicator.textContent = `WAVE ${waveNum}`;
+    }
+    if (this.turretPrompt) {
+      this.turretPrompt.textContent = turretName ? `按F操作 ${turretName}` : '';
+      this.turretPrompt.style.display = turretName ? 'block' : 'none';
+    }
   }
 }

@@ -52,3 +52,9 @@ body { background: #000; overflow: hidden; font-family: 'Courier New', monospace
 .vol-row input[type="range"]::-webkit-slider-thumb { appearance: none; width: 12px; height: 12px; border-radius: 50%; background: #c8a96e; cursor: pointer; }
 .vol-row input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: #c8a96e; border: none; cursor: pointer; }
 .vol-row .vol-val { color: #888; font-size: 11px; width: 32px; text-align: left; }
+#ship-health-block { position: absolute; top: 16px; left: 16px; }
+.bar-track.ship-track { width: 160px; height: 6px; }
+.bar-fill.ship-hp { background: #4488cc; width: 100%; }
+#ship-health-num { color: #4488cc; font-size: 12px; margin-top: 2px; }
+#wave-indicator { position: absolute; top: 50px; left: 50%; transform: translateX(-50%); color: #c8a96e; font-size: 18px; letter-spacing: 3px; opacity: 0.8; }
+#turret-prompt { position: absolute; bottom: 80px; left: 50%; transform: translateX(-50%); color: #fff; font-size: 14px; background: rgba(0,0,0,0.6); padding: 6px 16px; border-radius: 4px; display: none; }
