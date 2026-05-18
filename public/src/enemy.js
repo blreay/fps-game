@@ -472,6 +472,7 @@ export class EnemyManager {
   }
 
   spawnFromConfig(levelConfig) {
+    if (!levelConfig.enemies) return;
     levelConfig.enemies.forEach((cfg, i) => {
       const e = new Enemy(this.scene, this.physicsWorld, cfg.type, { x: cfg.x, y: cfg.y ?? 0, z: cfg.z }, this.audio, this.effects);
       const groupIdx = Math.floor(i / 5) % (levelConfig.patrolPoints?.length || 1);

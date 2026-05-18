@@ -161,8 +161,12 @@ function gameLoop() {
         if (hit.enemy.isDead) {
           killCount++;
           hud.showKillFeed(hit.enemy.type);
-          if (killCount >= TOTAL_ENEMIES) winGame();
+          if (TOTAL_ENEMIES > 0 && killCount >= TOTAL_ENEMIES) winGame();
         }
+      } else if (hit.object?.userData?.shipEnemy) {
+        hit.object.userData.shipEnemy.takeDamage(hit.damage);
+        hud.showHitMarker();
+        effects.spawnExplosion(hit.point);
       } else if (hit.surface) {
         effects.spawnBulletDecal(hit.point, hit.normal, hit.object);
       }
