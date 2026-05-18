@@ -12,7 +12,7 @@ let renderer, scene, physicsWorld, clock;
 let player, weaponSystem, enemyManager, sceneManager, hud, audio, effects;
 let gameState = 'menu';
 let killCount = 0;
-const TOTAL_ENEMIES = 15;
+const TOTAL_ENEMIES = 30;
 
 let _ready = false;
 

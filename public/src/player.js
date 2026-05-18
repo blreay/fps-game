@@ -13,7 +13,7 @@ export class Player {
   constructor(scene, physicsWorld, canvas) {
     this.scene = scene;
     this.physicsWorld = physicsWorld;
-    this.hp = 100;
+    this.hp = 5000;
     this.stamina = 100;
     this.isDead = false;
     this._onGround = false;
@@ -108,6 +108,6 @@ export class Player {
 
   heal(amount) {
     if (this.isDead) return;
-    this.hp = Math.min(100, this.hp + amount);
+    this.hp = Math.min(5000, this.hp + amount);
   }
 }

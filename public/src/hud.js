@@ -18,7 +18,7 @@ export class HUD {
   }
 
   update(player, weaponSystem, killCount, totalEnemies) {
-    const hpPct = player.hp / 100;
+    const hpPct = player.hp / 5000;
     this.healthFill.style.width = `${hpPct * 100}%`;
     this.healthFill.style.background = hpPct > 0.5 ? '#00cc44' : hpPct > 0.25 ? '#ffcc00' : '#ff3333';
     this.healthNum.textContent = Math.ceil(player.hp);
@@ -77,7 +77,7 @@ export class HUD {
   }
 
   showKillFeed(enemyType) {
-    const labels = { infantry: '步兵', heavy: '重甲兵', sniper: '狙击手' };
+    const labels = { infantry: '步兵', heavy: '重甲兵', sniper: '狙击手', bird: '小鸟', eagle: '老鹰', bat: '蝙蝠' };
     const el = document.createElement('div');
     el.className = 'kill-entry';
     el.textContent = `KILLED ${labels[enemyType] || enemyType}`;
