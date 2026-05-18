@@ -1,0 +1,30 @@
+[
+  {
+    "id": "mp5",
+    "name": "MP5冲锋枪",
+    "slot": "primary",
+    "damage": 20,
+    "fireRate": 800,
+    "range": 60,
+    "recoil": 0.3,
+    "reloadTime": 2.0,
+    "magSize": 30,
+    "reserveAmmo": 120,
+    "model": "assets/models/m4a1.glb",
+    "sound": { "fire": "assets/sounds/m4a1_fire.mp3", "reload": "assets/sounds/rifle_reload.mp3", "empty": "assets/sounds/empty_click.mp3" }
+  },
+  {
+    "id": "signal_pistol",
+    "name": "信号手枪",
+    "slot": "secondary",
+    "damage": 40,
+    "fireRate": 120,
+    "range": 45,
+    "recoil": 0.5,
+    "reloadTime": 2.2,
+    "magSize": 6,
+    "reserveAmmo": 24,
+    "model": "assets/models/usp.glb",
+    "sound": { "fire": "assets/sounds/pistol_fire.mp3", "reload": "assets/sounds/pistol_reload.mp3", "empty": "assets/sounds/empty_click.mp3" }
+  }
+]

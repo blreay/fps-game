@@ -1,0 +1,34 @@
+{
+  "id": "level02",
+  "name": "海上决战",
+  "type": "naval",
+  "playerSpawn": { "x": 0, "y": 3, "z": 0 },
+  "shipHealth": 5000,
+  "turrets": [
+    { "id": "main_gun", "name": "前甲板主炮", "position": { "x": 0, "y": 3.5, "z": -15 }, "damage": 500, "fireRate": 0.5, "type": "heavy" },
+    { "id": "port_gun", "name": "左舷副炮", "position": { "x": -4.5, "y": 3, "z": 0 }, "damage": 200, "fireRate": 1.5, "type": "medium" },
+    { "id": "starboard_gun", "name": "右舷副炮", "position": { "x": 4.5, "y": 3, "z": 0 }, "damage": 200, "fireRate": 1.5, "type": "medium" },
+    { "id": "stern_aa", "name": "船尾防空炮", "position": { "x": 0, "y": 3, "z": 15 }, "damage": 80, "fireRate": 5, "type": "light" }
+  ],
+  "waves": [
+    {
+      "id": 1,
+      "ships": [
+        { "type": "carrier", "x": -60, "z": -100, "hp": 3000, "shootInterval": 5, "shootDamage": 200, "deckShooters": 3 },
+        { "type": "carrier", "x": 60, "z": -110, "hp": 3000, "shootInterval": 5, "shootDamage": 200, "deckShooters": 4 }
+      ],
+      "dolphins": [
+        { "x": -20, "z": -40 }, { "x": 20, "z": -50 }, { "x": -30, "z": -30 }, { "x": 30, "z": -45 }
+      ]
+    },
+    {
+      "id": 2,
+      "ships": [
+        { "type": "boss", "x": 0, "z": -120, "hp": 8000, "shootInterval": 3, "shootDamage": 400, "burstInterval": 10, "burstCount": 3, "burstDamage": 150, "deckShooters": 5 }
+      ],
+      "dolphins": [
+        { "x": -25, "z": -35 }, { "x": 25, "z": -40 }, { "x": -15, "z": -55 }, { "x": 15, "z": -50 }, { "x": 0, "z": -30 }
+      ]
+    }
+  ]
+}
