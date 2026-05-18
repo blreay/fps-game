@@ -128,7 +128,7 @@ function gameLoop() {
     } else if (hit.surface) {
       effects.spawnBulletDecal(hit.point, hit.normal, hit.object);
     }
-  });
+  }, player.input);
 
   if (player.isDead && gameState === 'playing') {
     gameState = 'dead';

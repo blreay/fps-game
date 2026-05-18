@@ -116,17 +116,19 @@ export class WeaponSystem {
     this.ammo[w.id].reserve += amount;
   }
 
-  update(delta, camera, onHit) {
+  update(delta, camera, onHit, playerInput) {
     const w = this.currentWeapon;
     if (!w) return;
     const now = performance.now();
 
-    // ADS
-    const targetFOV = window._inputAds ? 45 : 75;
+    const isFiring = playerInput.fire;
+    const isAds = playerInput.ads;
+
+    const targetFOV = isAds ? 45 : 75;
     camera.fov += (targetFOV - camera.fov) * 0.15;
     camera.updateProjectionMatrix();
 
-    if (window._inputFire && !this._isReloading) {
+    if (isFiring && !this._isReloading) {
       const ammo = w.slot === 'melee' ? { current: 1 } : this.ammo[w.id];
       const interval = w.slot === 'melee' ? (1000 / w.attackRate) : (60000 / w.fireRate);
       if (ammo.current > 0 && (now - this._lastFired) >= interval) {
@@ -169,8 +171,3 @@ export class WeaponSystem {
     onHit({ enemy, damage, point: hit.point, normal: hit.face?.normal, object: hit.object, surface: !enemy });
   }
 }
-
-window._inputFire = false;
-window._inputAds = false;
-document.addEventListener('mousedown', e => { if (e.button === 0) window._inputFire = true; if (e.button === 2) window._inputAds = true; });
-document.addEventListener('mouseup', e => { if (e.button === 0) window._inputFire = false; if (e.button === 2) window._inputAds = false; });

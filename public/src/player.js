@@ -51,8 +51,16 @@ export class Player {
       this._pitch -= e.movementY * MOUSE_SENSITIVITY;
       this._pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this._pitch));
     });
-    document.addEventListener('mousedown', e => { if (e.button === 0) keys.fire = true; if (e.button === 2) keys.ads = true; });
-    document.addEventListener('mouseup', e => { if (e.button === 0) keys.fire = false; if (e.button === 2) keys.ads = false; });
+    const onDown = e => { if (e.button === 0) keys.fire = true; if (e.button === 2) keys.ads = true; };
+    const onUp = e => { if (e.button === 0) keys.fire = false; if (e.button === 2) keys.ads = false; };
+    document.addEventListener('mousedown', onDown);
+    document.addEventListener('mouseup', onUp);
+    document.addEventListener('pointerdown', onDown);
+    document.addEventListener('pointerup', onUp);
+    canvas.addEventListener('mousedown', onDown);
+    canvas.addEventListener('mouseup', onUp);
+    canvas.addEventListener('pointerdown', onDown);
+    canvas.addEventListener('pointerup', onUp);
     canvas.addEventListener('contextmenu', e => e.preventDefault());
   }
 
