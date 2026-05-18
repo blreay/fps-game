@@ -11,8 +11,8 @@ export class SceneManager {
   }
 
   _setupLights() {
-    this.scene.add(new THREE.AmbientLight(0x8b9a6b, 0.6));
-    const sun = new THREE.DirectionalLight(0xffd4a0, 1.2);
+    this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+    const sun = new THREE.DirectionalLight(0xfff4e0, 1.4);
     sun.position.set(50, 80, 30);
     sun.castShadow = true;
     sun.shadow.mapSize.set(2048, 2048);
@@ -23,7 +23,7 @@ export class SceneManager {
     sun.shadow.camera.top = 100;
     sun.shadow.camera.bottom = -100;
     this.scene.add(sun);
-    this.scene.add(new THREE.HemisphereLight(0x87ceeb, 0x4a5a3a, 0.4));
+    this.scene.add(new THREE.HemisphereLight(0x87ceeb, 0x556b2f, 0.5));
   }
 
   async loadLevel(levelConfig) {

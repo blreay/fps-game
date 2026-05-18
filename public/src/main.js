@@ -47,8 +47,8 @@ async function init() {
   renderer.toneMappingExposure = 0.8;
 
   scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x8b9a6b, 0.008);
-  scene.background = new THREE.Color(0x6b7a5a);
+  scene.fog = new THREE.FogExp2(0x87ceeb, 0.004);
+  scene.background = new THREE.Color(0x4a90d9);
 
   physicsWorld = new CANNON.World({ gravity: new CANNON.Vec3(0, -20, 0) });
   physicsWorld.broadphase = new CANNON.SAPBroadphase(physicsWorld);

@@ -22,10 +22,11 @@ export class Player {
     this.camera.position.set(0, 1.7, 0);
 
     const shape = new CANNON.Sphere(0.4);
-    this.body = new CANNON.Body({ mass: 80, linearDamping: 0.99, angularDamping: 1 });
+    this.body = new CANNON.Body({ mass: 80, linearDamping: 0.9, angularDamping: 1 });
     this.body.addShape(shape);
     this.body.position.set(0, 2, 0);
     this.body.fixedRotation = true;
+    this.body.allowSleep = false;
     this.body.updateMassProperties();
     physicsWorld.addBody(this.body);
 
