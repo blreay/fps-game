@@ -110,6 +110,24 @@ function _playerHurt() {
   _synth('sawtooth', 250, 0.12, { volume: 0.2, freqEnd: 80, _cat: 'effects' });
   _synth('noise', 2000, 0.08, { volume: 0.15, filter: 'lowpass', _cat: 'effects' });
 }
+function _cannonBoom() {
+  _synth('noise', 200, 0.4, { volume: 0.7, filter: 'lowpass', Q: 1.5, _cat: 'fire' });
+  _synth('sawtooth', 50, 0.3, { volume: 0.5, freqEnd: 15, _cat: 'fire' });
+  _synth('noise', 3000, 0.08, { volume: 0.3, filter: 'highpass', _cat: 'fire' });
+}
+function _waveAmbience() {
+  _synth('noise', 300, 2.0, { volume: 0.04, filter: 'lowpass', Q: 0.5, _cat: 'effects' });
+}
+function _bossAlarm() {
+  _synth('square', 400, 0.3, { volume: 0.2, _cat: 'enemy' });
+  setTimeout(() => _synth('square', 400, 0.3, { volume: 0.2, _cat: 'enemy' }), 500);
+  setTimeout(() => _synth('square', 400, 0.3, { volume: 0.2, _cat: 'enemy' }), 1000);
+}
+function _waveComplete() {
+  _synth('sine', 440, 0.15, { volume: 0.25, _cat: 'effects' });
+  setTimeout(() => _synth('sine', 554, 0.15, { volume: 0.25, _cat: 'effects' }), 150);
+  setTimeout(() => _synth('sine', 659, 0.3, { volume: 0.25, _cat: 'effects' }), 300);
+}
 
 const FIRE_SYNTH = {
   ak47: _rifleShot, m4a1: _rifleShot, awp: _sniperShot,
@@ -202,6 +220,11 @@ export class AudioManager {
   }
 
   playExplosion() { this._play('explosion', 'effects'); _explosion(); }
+
+  playCannon() { _cannonBoom(); }
+  playWaveAmbience() { _waveAmbience(); }
+  playBossAlarm() { _bossAlarm(); }
+  playWaveComplete() { _waveComplete(); }
 
   playWin() {
     this._stopBgm();
