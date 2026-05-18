@@ -10,7 +10,8 @@ const volumes = {
 };
 
 function _vol(category) {
-  return volumes.master * (volumes[category] || 0.7);
+  const catVol = category in volumes ? volumes[category] : 0.7;
+  return volumes.master * catVol;
 }
 
 function _synth(type, freq, duration, opts = {}) {
@@ -259,15 +260,20 @@ export class AudioManager {
     if (!_ctx) return;
     const loop = () => {
       if (!_bgmSrc) return;
-      const notes = [65, 73, 82, 87, 82, 73];
-      notes.forEach((freq, i) => {
+      const melody = [
+        { f: 220, d: 1.2 }, { f: 262, d: 0.8 }, { f: 196, d: 1.0 },
+        { f: 247, d: 0.8 }, { f: 175, d: 1.2 }, { f: 220, d: 1.0 }
+      ];
+      let offset = 0;
+      melody.forEach(note => {
         setTimeout(() => {
           if (!_bgmSrc) return;
-          _synth('triangle', freq, 0.8, { volume: 0.08, _cat: 'music' });
-          _synth('sine', freq * 2, 0.6, { volume: 0.04, _cat: 'music' });
-        }, i * 900);
+          _synth('sine', note.f, note.d * 0.9, { volume: 0.06, _cat: 'music' });
+          _synth('sine', note.f * 0.5, note.d * 0.9, { volume: 0.03, _cat: 'music' });
+        }, offset);
+        offset += note.d * 1000;
       });
-      setTimeout(loop, notes.length * 900);
+      setTimeout(loop, offset);
     };
     _bgmSrc = 'synth';
     loop();
