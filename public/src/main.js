@@ -28,6 +28,7 @@ async function init() {
     if (!document.pointerLockElement && gameState === 'playing') pauseGame();
   });
   window.addEventListener('resize', onResize);
+  _initVolumeSliders();
 
   const btnEnter = document.getElementById('btn-enter');
   btnEnter.textContent = '加载中...';
@@ -167,6 +168,20 @@ function onResize() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   player.camera.aspect = window.innerWidth / window.innerHeight;
   player.camera.updateProjectionMatrix();
+}
+
+function _initVolumeSliders() {
+  const ids = ['master', 'fire', 'reload', 'enemy', 'effects', 'music'];
+  ids.forEach(cat => {
+    const slider = document.getElementById(`vol-${cat}`);
+    if (!slider) return;
+    slider.addEventListener('input', () => {
+      const val = parseInt(slider.value) / 100;
+      if (audio) audio.setVolume(cat, val);
+      const span = slider.nextElementSibling;
+      if (span) span.textContent = slider.value + '%';
+    });
+  });
 }
 
 init().catch(err => {

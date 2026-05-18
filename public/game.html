@@ -49,6 +49,15 @@
   </div>
   <div id="screen-pause" class="screen hidden">
     <h2>暂停</h2>
+    <div id="audio-settings">
+      <h3>音效设置</h3>
+      <div class="vol-row"><label>主音量</label><input type="range" id="vol-master" min="0" max="100" value="70"><span class="vol-val">70%</span></div>
+      <div class="vol-row"><label>武器射击</label><input type="range" id="vol-fire" min="0" max="100" value="80"><span class="vol-val">80%</span></div>
+      <div class="vol-row"><label>换弹声音</label><input type="range" id="vol-reload" min="0" max="100" value="60"><span class="vol-val">60%</span></div>
+      <div class="vol-row"><label>怪物声音</label><input type="range" id="vol-enemy" min="0" max="100" value="40"><span class="vol-val">40%</span></div>
+      <div class="vol-row"><label>环境音效</label><input type="range" id="vol-effects" min="0" max="100" value="70"><span class="vol-val">70%</span></div>
+      <div class="vol-row"><label>背景音乐</label><input type="range" id="vol-music" min="0" max="100" value="25"><span class="vol-val">25%</span></div>
+    </div>
     <button id="btn-resume">继续</button>
     <button id="btn-menu">返回主菜单</button>
   </div>
