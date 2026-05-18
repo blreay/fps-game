@@ -52,13 +52,17 @@ export class WeaponSystem {
       const mesh = gltf.scene;
       mesh.name = `viewmodel_${cfg.id}`;
       mesh.visible = false;
-      mesh.scale.setScalar(0.05);
-      mesh.position.set(0.15, -0.15, -0.35);
+      mesh.scale.setScalar(0.35);
+      mesh.rotation.set(0, Math.PI, 0);
+      mesh.position.set(0.2, -0.2, -0.4);
+      mesh.traverse(child => {
+        if (child.isMesh) { child.castShadow = true; }
+      });
       if (cfg._mesh) this.camera.remove(cfg._mesh);
       this.camera.add(mesh);
       cfg._mesh = mesh;
       if (this.slots[this.equippedSlot] === cfg.id) mesh.visible = true;
-    } catch(e) {}
+    } catch(e) { console.warn('Model load failed:', cfg.id, e); }
   }
 
   _createPlaceholderModel(cfg) {
