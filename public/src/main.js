@@ -103,18 +103,20 @@ function gameLoop() {
   const delta = Math.min(clock.getDelta(), 0.05);
   if (gameState !== 'playing') { renderer.render(scene, player.camera); return; }
 
-  try {
-    player.update(delta);
-    physicsWorld.step(1 / 60, delta, 3);
-    player.syncFromPhysics();
+  player.update(delta);
+  try { physicsWorld.step(1 / 60, delta, 3); } catch (e) { console.error('Physics error:', e); }
+  player.syncFromPhysics();
 
+  try {
     enemyManager.update(delta, player.position);
     enemyManager.enemies.forEach(e => {
       if (e.isDead) return;
       const dmg = e.getAttackDamage?.();
       if (dmg > 0) { player.takeDamage(dmg); hud.flashDamage(); audio.playHurt(); }
     });
+  } catch (err) { console.error('Enemy error:', err); }
 
+  try {
     weaponSystem.update(delta, player.camera, (hit) => {
       if (hit.enemy) {
         hit.enemy.takeDamage(hit.damage);
@@ -129,30 +131,27 @@ function gameLoop() {
         effects.spawnBulletDecal(hit.point, hit.normal, hit.object);
       }
     }, player.input);
+  } catch (err) { console.error('Weapon error:', err); }
 
-    if (player.isDead && gameState === 'playing') {
-      gameState = 'dead';
-      document.exitPointerLock();
-      audio.playDeath();
-      setTimeout(() => document.getElementById('screen-dead').classList.remove('hidden'), 1500);
-    }
-
-    const nearPickups = sceneManager.getPickupsNear(player.position, 1.5);
-    if (nearPickups.length > 0 && player.input.pickup) {
-      nearPickups.forEach(p => {
-        if (p.type === 'medkit') player.heal(30);
-        else if (p.type === 'ammo') weaponSystem.addAmmo(30);
-        sceneManager.removePickup(p.id);
-        audio.playPickup(p.type);
-      });
-    }
-
-    hud.update(player, weaponSystem, killCount, TOTAL_ENEMIES);
-    audio.setListenerPosition(player.position);
-  } catch (err) {
-    console.error('Game loop error:', err);
+  if (player.isDead && gameState === 'playing') {
+    gameState = 'dead';
+    document.exitPointerLock();
+    audio.playDeath();
+    setTimeout(() => document.getElementById('screen-dead').classList.remove('hidden'), 1500);
   }
 
+  const nearPickups = sceneManager.getPickupsNear(player.position, 1.5);
+  if (nearPickups.length > 0 && player.input.pickup) {
+    nearPickups.forEach(p => {
+      if (p.type === 'medkit') player.heal(30);
+      else if (p.type === 'ammo') weaponSystem.addAmmo(30);
+      sceneManager.removePickup(p.id);
+      audio.playPickup(p.type);
+    });
+  }
+
+  hud.update(player, weaponSystem, killCount, TOTAL_ENEMIES);
+  audio.setListenerPosition(player.position);
   renderer.render(scene, player.camera);
 }
 

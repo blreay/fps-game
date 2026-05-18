@@ -42,9 +42,16 @@ export class Player {
 
   _bindInputs(canvas) {
     const keys = this.input;
-    const keyMap = { KeyW:'forward', KeyS:'back', KeyA:'left', KeyD:'right', Space:'jump', ShiftLeft:'sprint', ControlLeft:'crouch', KeyR:'reload', KeyG:'grenade', KeyF:'pickup' };
-    document.addEventListener('keydown', e => { if (keyMap[e.code]) keys[keyMap[e.code]] = true; });
-    document.addEventListener('keyup', e => { if (keyMap[e.code]) keys[keyMap[e.code]] = false; });
+    const codeMap = { KeyW:'forward', KeyS:'back', KeyA:'left', KeyD:'right', Space:'jump', ShiftLeft:'sprint', ShiftRight:'sprint', ControlLeft:'crouch', ControlRight:'crouch', KeyR:'reload', KeyG:'grenade', KeyF:'pickup' };
+    const keyMap = { w:'forward', W:'forward', s:'back', S:'back', a:'left', A:'left', d:'right', D:'right', ' ':'jump', r:'reload', R:'reload', g:'grenade', G:'grenade', f:'pickup', F:'pickup' };
+    document.addEventListener('keydown', e => {
+      const action = codeMap[e.code] || keyMap[e.key];
+      if (action) { keys[action] = true; e.preventDefault(); }
+    });
+    document.addEventListener('keyup', e => {
+      const action = codeMap[e.code] || keyMap[e.key];
+      if (action) { keys[action] = false; }
+    });
     document.addEventListener('mousemove', e => {
       if (!document.pointerLockElement) return;
       this._yaw -= e.movementX * MOUSE_SENSITIVITY;
