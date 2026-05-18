@@ -7,12 +7,18 @@ import { SceneManager } from './scene.js';
 import { HUD } from './hud.js';
 import { AudioManager } from './audio.js';
 import { Effects } from './effects.js';
+import { TurretManager } from './turret.js';
+import { WaveManager } from './wave-manager.js';
 
 const urlParams = new URLSearchParams(window.location.search);
 const CURRENT_LEVEL = parseInt(urlParams.get('level')) || 1;
 
 let renderer, scene, physicsWorld, clock;
 let player, weaponSystem, enemyManager, sceneManager, hud, audio, effects;
+let turretManager = null;
+let waveManager = null;
+let shipHealth = 0;
+let maxShipHealth = 0;
 let gameState = 'menu';
 let killCount = 0;
 let TOTAL_ENEMIES = 30;
@@ -80,6 +86,26 @@ async function init() {
   enemyManager.spawnFromConfig(levelData);
   await audio.loadSounds(weaponsData);
 
+  if (CURRENT_LEVEL === 2 && levelData.type === 'naval') {
+    turretManager = new TurretManager(scene, audio);
+    turretManager.loadFromConfig(levelData.turrets);
+    waveManager = new WaveManager(scene, physicsWorld, audio, effects);
+    shipHealth = levelData.shipHealth;
+    maxShipHealth = levelData.shipHealth;
+    TOTAL_ENEMIES = 0;
+    waveManager.onWaveComplete = () => { audio.playWaveComplete(); };
+    waveManager.onAllComplete = () => winGame();
+    waveManager.loadFromConfig(levelData.waves);
+    document.getElementById('ship-health-block')?.classList.remove('hidden');
+    document.getElementById('wave-indicator')?.classList.remove('hidden');
+  }
+
+  document.addEventListener('mousemove', e => {
+    if (turretManager?.isInTurret() && document.pointerLockElement) {
+      turretManager.activeTurret.rotate(e.movementX, e.movementY, 0.002);
+    }
+  });
+
   renderer.setAnimationLoop(gameLoop);
   _ready = true;
   btnEnter.textContent = '进入战场';
@@ -109,9 +135,13 @@ function gameLoop() {
   const delta = Math.min(clock.getDelta(), 0.05);
   if (gameState !== 'playing') { renderer.render(scene, player.camera); return; }
 
-  player.update(delta);
-  try { physicsWorld.step(1 / 60, delta, 3); } catch (e) { console.error('Physics error:', e); }
-  player.syncFromPhysics();
+  if (!turretManager?.isInTurret()) {
+    player.update(delta);
+    try { physicsWorld.step(1 / 60, delta, 3); } catch (e) { console.error('Physics error:', e); }
+    player.syncFromPhysics();
+  } else {
+    turretManager.update(player.camera);
+  }
 
   try {
     enemyManager.update(delta, player.position);
@@ -154,6 +184,72 @@ function gameLoop() {
       sceneManager.removePickup(p.id);
       audio.playPickup(p.type);
     });
+  }
+
+  // Naval level systems
+  if (turretManager) {
+    if (turretManager.isInTurret()) {
+      if (player.input.fire) {
+        const shot = turretManager.activeTurret.tryFire(performance.now());
+        if (shot) {
+          audio.playCannon();
+          const raycaster = new THREE.Raycaster(shot.origin, shot.direction, 0, 300);
+          const hits = raycaster.intersectObjects(scene.children, true);
+          for (const hit of hits) {
+            const ship = hit.object.userData?.shipEnemy;
+            if (ship) {
+              ship.takeDamage(shot.damage);
+              effects.spawnExplosion(hit.point);
+              hud.showHitMarker();
+              break;
+            }
+            const enemy = hit.object.userData?.enemy;
+            if (enemy) {
+              enemy.takeDamage(shot.damage);
+              effects.spawnBlood(hit.point);
+              hud.showHitMarker();
+              break;
+            }
+          }
+        }
+      }
+      if (player.input.pickup) {
+        turretManager.exitTurret();
+        player.input.pickup = false;
+      }
+    } else {
+      const nearest = turretManager.getNearestInteractable(player.position);
+      if (nearest && player.input.pickup) {
+        turretManager.enterTurret(nearest, player.camera);
+        player.input.pickup = false;
+      }
+    }
+  }
+
+  if (waveManager) {
+    waveManager.update(delta, player.position);
+    const shipDmg = waveManager.getDamageToPlayerShip();
+    if (shipDmg > 0) {
+      shipHealth = Math.max(0, shipHealth - shipDmg);
+      hud.flashDamage();
+      if (shipHealth <= 0 && gameState === 'playing') {
+        gameState = 'dead';
+        document.exitPointerLock();
+        audio.playDeath();
+        setTimeout(() => document.getElementById('screen-dead').classList.remove('hidden'), 1500);
+      }
+    }
+    const playerDmg = waveManager.getPlayerDamage();
+    if (playerDmg > 0) {
+      player.takeDamage(playerDmg);
+      hud.flashDamage();
+      audio.playHurt();
+    }
+  }
+
+  if (CURRENT_LEVEL === 2) {
+    const nearTurret = turretManager?.getNearestInteractable(player.position);
+    hud.updateNaval?.(shipHealth, maxShipHealth, (waveManager?.currentWave || 0) + 1, nearTurret?.name);
   }
 
   hud.update(player, weaponSystem, killCount, TOTAL_ENEMIES);
