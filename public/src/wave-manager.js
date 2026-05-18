@@ -1,5 +1,6 @@
 import { ShipEnemy } from './ship-enemy.js';
 import { DolphinRider } from './dolphin-rider.js';
+import { Aircraft } from './aircraft.js';
 
 export class WaveManager {
   constructor(scene, physicsWorld, audio, effects) {
@@ -12,6 +13,7 @@ export class WaveManager {
     this.state = 'idle';
     this.ships = [];
     this.dolphins = [];
+    this.aircraft = [];
     this._transitionTimer = 0;
     this.onWaveComplete = null;
     this.onAllComplete = null;
@@ -45,6 +47,11 @@ export class WaveManager {
       const dolphin = new DolphinRider(this.scene, this.physicsWorld, { x: cfg.x, z: cfg.z }, this.audio);
       this.dolphins.push(dolphin);
     });
+
+    (wave.aircraft || []).forEach(cfg => {
+      const plane = new Aircraft(this.scene, { x: cfg.x, y: cfg.y, z: cfg.z }, this.audio);
+      this.aircraft.push(plane);
+    });
   }
 
   update(delta, playerPos) {
@@ -60,6 +67,7 @@ export class WaveManager {
 
     this.ships.forEach(s => s.update(delta));
     this.dolphins.forEach(d => d.update(delta, playerPos));
+    this.aircraft.forEach(a => a.update(delta));
 
     if (this._isCurrentWaveDone()) {
       if (this.currentWave >= this.waves.length - 1) {
@@ -77,18 +85,24 @@ export class WaveManager {
     const waveConfig = this.waves[this.currentWave];
     const waveShipCount = waveConfig.ships.length;
     const waveDolphinCount = waveConfig.dolphins.length;
+    const waveAircraftCount = (waveConfig.aircraft || []).length;
 
     let startShipIdx = 0;
     let startDolphinIdx = 0;
+    let startAircraftIdx = 0;
     for (let i = 0; i < this.currentWave; i++) {
       startShipIdx += this.waves[i].ships.length;
       startDolphinIdx += this.waves[i].dolphins.length;
+      startAircraftIdx += (this.waves[i].aircraft || []).length;
     }
 
     const waveShips = this.ships.slice(startShipIdx, startShipIdx + waveShipCount);
     const waveDolphins = this.dolphins.slice(startDolphinIdx, startDolphinIdx + waveDolphinCount);
+    const waveAircraft = this.aircraft.slice(startAircraftIdx, startAircraftIdx + waveAircraftCount);
 
-    return waveShips.every(s => s.isDead) && waveDolphins.every(d => d.isDead);
+    return waveShips.every(s => s.isDead) &&
+           waveDolphins.every(d => d.isDead) &&
+           waveAircraft.every(a => a.isDead);
   }
 
   getDamageToPlayerShip() {
@@ -100,11 +114,13 @@ export class WaveManager {
   getPlayerDamage() {
     let total = 0;
     this.dolphins.forEach(d => { total += d.getAttackDamage(); });
+    this.ships.forEach(s => { total += s.getDamageToPlayer(); });
+    this.aircraft.forEach(a => { total += a.getAttackDamage(); });
     return total;
   }
 
   get allEnemies() {
-    return [...this.dolphins];
+    return [...this.dolphins, ...this.aircraft];
   }
 
   get allShips() {

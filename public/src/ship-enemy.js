@@ -1,5 +1,78 @@
 import * as THREE from 'three';
 
+class DeckShooter {
+  constructor(ship, localPos) {
+    this.ship = ship;
+    this.hp = 1;
+    this.isDead = false;
+    this._localPos = localPos;
+    this._shootTimer = 1 + Math.random() * 2;
+    this._shootInterval = 2 + Math.random();
+    this._pendingDamage = 0;
+    this.mesh = this._buildMesh();
+    this.mesh.position.copy(localPos);
+    this.mesh.userData.enemy = this;
+    this.mesh.traverse(c => { c.userData.enemy = this; });
+    ship.mesh.add(this.mesh);
+  }
+
+  _buildMesh() {
+    const group = new THREE.Group();
+    const skinMat = new THREE.MeshStandardMaterial({ color: 0xc8a882 });
+    const uniformMat = new THREE.MeshStandardMaterial({ color: 0x2a3a2a });
+
+    const head = new THREE.Mesh(new THREE.SphereGeometry(0.2, 6, 6), skinMat);
+    head.position.y = 1.6;
+    group.add(head);
+
+    const torso = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.3), uniformMat);
+    torso.position.y = 1.1;
+    group.add(torso);
+
+    const legL = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.7, 0.2), uniformMat);
+    legL.position.set(-0.12, 0.35, 0);
+    group.add(legL);
+
+    const legR = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.7, 0.2), uniformMat);
+    legR.position.set(0.12, 0.35, 0);
+    group.add(legR);
+
+    const armL = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.6, 0.15), uniformMat);
+    armL.position.set(-0.35, 1.1, 0);
+    group.add(armL);
+
+    const armR = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.6, 0.15), uniformMat);
+    armR.position.set(0.35, 1.1, 0);
+    group.add(armR);
+
+    return group;
+  }
+
+  getAttackDamage() {
+    const d = this._pendingDamage;
+    this._pendingDamage = 0;
+    return d;
+  }
+
+  update(delta) {
+    if (this.isDead) return;
+    this._shootTimer -= delta;
+    if (this._shootTimer <= 0) {
+      this._shootTimer = this._shootInterval;
+      this._pendingDamage = 15;
+    }
+  }
+
+  takeDamage(amount) {
+    if (this.isDead) return;
+    this.hp -= amount;
+    if (this.hp <= 0) {
+      this.isDead = true;
+      this.mesh.visible = false;
+    }
+  }
+}
+
 export class ShipEnemy {
   constructor(scene, config, audio, effects) {
     this.scene = scene;
@@ -22,12 +95,32 @@ export class ShipEnemy {
     this._driftSpeed = 0.5 + Math.random() * 0.5;
     this._driftDir = Math.random() > 0.5 ? 1 : -1;
     this._pendingDamageToShip = 0;
+    this._pendingDamageToPlayer = 0;
 
     this.mesh = this._buildMesh(config);
     this.mesh.position.set(config.x, 0, config.z);
     this.mesh.userData.shipEnemy = this;
     this.mesh.traverse(child => { child.userData.shipEnemy = this; });
     scene.add(this.mesh);
+
+    this.deckShooters = [];
+    this._spawnDeckShooters(config);
+  }
+
+  _spawnDeckShooters(config) {
+    const isBoss = config.type === 'boss';
+    const height = isBoss ? 12 : 8;
+    const length = isBoss ? 80 : 60;
+    const width = isBoss ? 20 : 15;
+    const deckY = height - 2;
+
+    for (let i = 0; i < this.deckShooterCount; i++) {
+      const x = (Math.random() - 0.5) * width * 0.6;
+      const z = (Math.random() - 0.5) * length * 0.6;
+      const pos = new THREE.Vector3(x, deckY + 0.25, z);
+      const shooter = new DeckShooter(this, pos);
+      this.deckShooters.push(shooter);
+    }
   }
 
   _buildMesh(config) {
@@ -78,6 +171,13 @@ export class ShipEnemy {
     return d;
   }
 
+  getDamageToPlayer() {
+    let d = this._pendingDamageToPlayer;
+    this._pendingDamageToPlayer = 0;
+    this.deckShooters.forEach(s => { d += s.getAttackDamage(); });
+    return d;
+  }
+
   update(delta) {
     if (this.isDead) return;
     if (this._sinking) {
@@ -111,6 +211,9 @@ export class ShipEnemy {
         this.audio?.playExplosion?.();
       }
     }
+
+    // Update deck shooters
+    this.deckShooters.forEach(s => s.update(delta));
   }
 
   takeDamage(amount) {
@@ -120,6 +223,7 @@ export class ShipEnemy {
       this.hp = 0;
       this.isDead = true;
       this._sinking = true;
+      this.deckShooters.forEach(s => { s.isDead = true; s.mesh.visible = false; });
       this.effects?.spawnExplosion?.(this.mesh.position);
     }
   }

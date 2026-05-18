@@ -26,7 +26,7 @@ export class Player {
     const shape = new CANNON.Sphere(0.4);
     this.body = new CANNON.Body({ mass: 80, linearDamping: 0.9, angularDamping: 1 });
     this.body.addShape(shape);
-    this.body.position.set(0, 2, 0);
+    this.body.position.set(0, 5, 0);
     this.body.fixedRotation = true;
     this.body.allowSleep = false;
     this.body.updateMassProperties();
