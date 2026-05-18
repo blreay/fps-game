@@ -27,8 +27,12 @@ export class SceneManager {
   }
 
   async loadLevel(levelConfig) {
-    this._buildGeometry();
-    this._spawnPickups(levelConfig.pickups);
+    if (levelConfig.type === 'naval') {
+      this._buildNavalScene(levelConfig);
+    } else {
+      this._buildGeometry();
+    }
+    this._spawnPickups(levelConfig.pickups || []);
   }
 
   _buildGeometry() {
@@ -83,6 +87,110 @@ export class SceneManager {
     bunker.position.set(55, 1.5, -35); bunker.castShadow = bunker.receiveShadow = true; this.scene.add(bunker);
     const bBody = new CANNON.Body({mass:0}); bBody.addShape(new CANNON.Box(new CANNON.Vec3(6,1.5,4)));
     bBody.position.set(55, 1.5, -35); this.physicsWorld.addBody(bBody);
+  }
+
+  _buildNavalScene(levelConfig) {
+    // Ocean plane
+    const oceanGeo = new THREE.PlaneGeometry(600, 600, 32, 32);
+    const oceanMat = new THREE.MeshStandardMaterial({
+      color: 0x1a6b8a, roughness: 0.3, metalness: 0.1, transparent: true, opacity: 0.85
+    });
+    const ocean = new THREE.Mesh(oceanGeo, oceanMat);
+    ocean.rotation.x = -Math.PI / 2;
+    ocean.position.y = 0;
+    ocean.receiveShadow = true;
+    ocean.name = 'ocean';
+    this.scene.add(ocean);
+
+    // Ocean physics (invisible floor below ocean to catch falling objects)
+    const oceanBody = new CANNON.Body({ mass: 0 });
+    oceanBody.addShape(new CANNON.Plane());
+    oceanBody.quaternion.setFromEuler(-Math.PI / 2, 0, 0);
+    oceanBody.position.y = -1;
+    this.physicsWorld.addBody(oceanBody);
+
+    // Player destroyer ship
+    this._turretPositions = levelConfig.turrets || [];
+    this._buildDestroyer();
+  }
+
+  _buildDestroyer() {
+    const shipMat = new THREE.MeshStandardMaterial({ color: 0x5a5a5a, roughness: 0.7 });
+    const deckMat = new THREE.MeshStandardMaterial({ color: 0x4a4a4a, roughness: 0.8 });
+
+    // Hull (main body)
+    const hullGeo = new THREE.BoxGeometry(10, 3, 40);
+    const hull = new THREE.Mesh(hullGeo, shipMat);
+    hull.position.set(0, 1.5, 0);
+    hull.castShadow = true;
+    hull.receiveShadow = true;
+    this.scene.add(hull);
+
+    // Deck (flat top)
+    const deckGeo = new THREE.BoxGeometry(10, 0.3, 40);
+    const deck = new THREE.Mesh(deckGeo, deckMat);
+    deck.position.set(0, 3, 0);
+    deck.receiveShadow = true;
+    this.scene.add(deck);
+
+    // Bridge (command tower)
+    const bridgeGeo = new THREE.BoxGeometry(4, 4, 6);
+    const bridge = new THREE.Mesh(bridgeGeo, shipMat);
+    bridge.position.set(0, 5, 5);
+    bridge.castShadow = true;
+    this.scene.add(bridge);
+
+    // Bow (pointed front)
+    const bowGeo = new THREE.ConeGeometry(5, 8, 4);
+    bowGeo.rotateX(Math.PI / 2);
+    const bow = new THREE.Mesh(bowGeo, shipMat);
+    bow.position.set(0, 1.5, -24);
+    bow.rotation.y = Math.PI / 4;
+    this.scene.add(bow);
+
+    // Railings (physics walls to prevent falling off)
+    const railShape = new CANNON.Box(new CANNON.Vec3(0.1, 1, 20));
+    const leftRail = new CANNON.Body({ mass: 0 });
+    leftRail.addShape(railShape);
+    leftRail.position.set(-5, 4, 0);
+    this.physicsWorld.addBody(leftRail);
+
+    const rightRail = new CANNON.Body({ mass: 0 });
+    rightRail.addShape(railShape);
+    rightRail.position.set(5, 4, 0);
+    this.physicsWorld.addBody(rightRail);
+
+    const bowRail = new CANNON.Body({ mass: 0 });
+    bowRail.addShape(new CANNON.Box(new CANNON.Vec3(5, 1, 0.1)));
+    bowRail.position.set(0, 4, -20);
+    this.physicsWorld.addBody(bowRail);
+
+    const sternRail = new CANNON.Body({ mass: 0 });
+    sternRail.addShape(new CANNON.Box(new CANNON.Vec3(5, 1, 0.1)));
+    sternRail.position.set(0, 4, 20);
+    this.physicsWorld.addBody(sternRail);
+
+    // Deck physics floor
+    const deckBody = new CANNON.Body({ mass: 0 });
+    deckBody.addShape(new CANNON.Box(new CANNON.Vec3(5, 0.15, 20)));
+    deckBody.position.set(0, 3.15, 0);
+    this.physicsWorld.addBody(deckBody);
+
+    // Turret visual markers
+    this._turretPositions.forEach(t => {
+      const baseGeo = new THREE.CylinderGeometry(0.8, 1, 0.6, 8);
+      const baseMat = new THREE.MeshStandardMaterial({ color: 0x3a3a3a });
+      const base = new THREE.Mesh(baseGeo, baseMat);
+      base.position.set(t.position.x, t.position.y, t.position.z);
+      base.castShadow = true;
+      this.scene.add(base);
+
+      const barrelGeo = new THREE.CylinderGeometry(0.1, 0.15, 2, 6);
+      barrelGeo.rotateX(Math.PI / 2);
+      const barrel = new THREE.Mesh(barrelGeo, baseMat);
+      barrel.position.set(t.position.x, t.position.y + 0.4, t.position.z - 1);
+      this.scene.add(barrel);
+    });
   }
 
   _spawnPickups(pickupsConfig) {
