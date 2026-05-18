@@ -49,14 +49,26 @@
   </div>
   <div id="screen-pause" class="screen hidden">
     <h2>暂停</h2>
-    <div id="audio-settings">
-      <h3>音效设置</h3>
-      <div class="vol-row"><label>主音量</label><input type="range" id="vol-master" min="0" max="100" value="70"><span class="vol-val">70%</span></div>
-      <div class="vol-row"><label>武器射击</label><input type="range" id="vol-fire" min="0" max="100" value="80"><span class="vol-val">80%</span></div>
-      <div class="vol-row"><label>换弹声音</label><input type="range" id="vol-reload" min="0" max="100" value="60"><span class="vol-val">60%</span></div>
-      <div class="vol-row"><label>怪物声音</label><input type="range" id="vol-enemy" min="0" max="100" value="40"><span class="vol-val">40%</span></div>
-      <div class="vol-row"><label>环境音效</label><input type="range" id="vol-effects" min="0" max="100" value="70"><span class="vol-val">70%</span></div>
-      <div class="vol-row"><label>背景音乐</label><input type="range" id="vol-music" min="0" max="100" value="25"><span class="vol-val">25%</span></div>
+    <div id="settings-panels">
+      <div id="gameplay-settings" class="settings-panel">
+        <h3>游戏设置</h3>
+        <div class="vol-row"><label>行走速度</label><input type="range" id="set-walk" min="5" max="30" value="12"><span class="vol-val">12</span></div>
+        <div class="vol-row"><label>冲刺速度</label><input type="range" id="set-sprint" min="10" max="50" value="20"><span class="vol-val">20</span></div>
+        <div class="vol-row"><label>蹲走速度</label><input type="range" id="set-crouch" min="2" max="15" value="6"><span class="vol-val">6</span></div>
+        <div class="vol-row"><label>跳跃高度</label><input type="range" id="set-jump" min="5" max="30" value="12"><span class="vol-val">12</span></div>
+        <div class="vol-row"><label>鼠标灵敏</label><input type="range" id="set-sens" min="1" max="10" value="4"><span class="vol-val">4</span></div>
+        <div class="vol-row"><label>体力消耗</label><input type="range" id="set-stamdr" min="5" max="60" value="30"><span class="vol-val">30</span></div>
+        <div class="vol-row"><label>体力恢复</label><input type="range" id="set-stamrg" min="5" max="60" value="20"><span class="vol-val">20</span></div>
+      </div>
+      <div id="audio-settings" class="settings-panel">
+        <h3>音效设置</h3>
+        <div class="vol-row"><label>主音量</label><input type="range" id="vol-master" min="0" max="100" value="70"><span class="vol-val">70%</span></div>
+        <div class="vol-row"><label>武器射击</label><input type="range" id="vol-fire" min="0" max="100" value="80"><span class="vol-val">80%</span></div>
+        <div class="vol-row"><label>换弹声音</label><input type="range" id="vol-reload" min="0" max="100" value="60"><span class="vol-val">60%</span></div>
+        <div class="vol-row"><label>怪物声音</label><input type="range" id="vol-enemy" min="0" max="100" value="40"><span class="vol-val">40%</span></div>
+        <div class="vol-row"><label>环境音效</label><input type="range" id="vol-effects" min="0" max="100" value="70"><span class="vol-val">70%</span></div>
+        <div class="vol-row"><label>背景音乐</label><input type="range" id="vol-music" min="0" max="100" value="25"><span class="vol-val">25%</span></div>
+      </div>
     </div>
     <button id="btn-resume">继续</button>
     <button id="btn-menu">返回主菜单</button>

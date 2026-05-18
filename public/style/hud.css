@@ -43,6 +43,9 @@ body { background: #000; overflow: hidden; font-family: 'Courier New', monospace
 .screen button:hover { background: #c8a96e; color: #000; }
 #audio-settings { width: 320px; margin-bottom: 12px; }
 #audio-settings h3 { color: #c8a96e; font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; text-align: center; }
+#settings-panels { display: flex; gap: 40px; margin-bottom: 16px; }
+.settings-panel { width: 280px; }
+.settings-panel h3 { color: #c8a96e; font-size: 14px; letter-spacing: 2px; margin-bottom: 12px; text-align: center; }
 .vol-row { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .vol-row label { color: #ccc; font-size: 12px; width: 70px; text-align: right; flex-shrink: 0; }
 .vol-row input[type="range"] { flex: 1; height: 4px; appearance: none; background: rgba(255,255,255,0.15); border-radius: 2px; outline: none; cursor: pointer; }

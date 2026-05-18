@@ -1,13 +1,15 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 
-const WALK_SPEED = 8;
-const SPRINT_SPEED = 13;
-const CROUCH_SPEED = 4;
-const JUMP_FORCE = 9;
-const STAMINA_DRAIN = 30;
-const STAMINA_REGEN = 20;
-const MOUSE_SENSITIVITY = 0.002;
+export const playerSettings = {
+  walkSpeed: 12,
+  sprintSpeed: 20,
+  crouchSpeed: 6,
+  jumpForce: 12,
+  staminaDrain: 30,
+  staminaRegen: 20,
+  mouseSensitivity: 0.002
+};
 
 export class Player {
   constructor(scene, physicsWorld, canvas) {
@@ -55,8 +57,8 @@ export class Player {
     });
     document.addEventListener('mousemove', e => {
       if (!document.pointerLockElement) return;
-      this._yaw -= e.movementX * MOUSE_SENSITIVITY;
-      this._pitch -= e.movementY * MOUSE_SENSITIVITY;
+      this._yaw -= e.movementX * playerSettings.mouseSensitivity;
+      this._pitch -= e.movementY * playerSettings.mouseSensitivity;
       this._pitch = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, this._pitch));
     });
     const onDown = e => { if (e.button === 0) keys.fire = true; if (e.button === 2) keys.ads = true; };
@@ -76,9 +78,9 @@ export class Player {
     if (this.isDead) return;
     this._onGround = false;
     const isSprinting = this.input.sprint && !this.input.crouch && this.stamina > 0;
-    const speed = this.input.crouch ? CROUCH_SPEED : (isSprinting ? SPRINT_SPEED : WALK_SPEED);
-    if (isSprinting) this.stamina = Math.max(0, this.stamina - STAMINA_DRAIN * delta);
-    else this.stamina = Math.min(100, this.stamina + STAMINA_REGEN * delta);
+    const speed = this.input.crouch ? playerSettings.crouchSpeed : (isSprinting ? playerSettings.sprintSpeed : playerSettings.walkSpeed);
+    if (isSprinting) this.stamina = Math.max(0, this.stamina - playerSettings.staminaDrain * delta);
+    else this.stamina = Math.min(100, this.stamina + playerSettings.staminaRegen * delta);
 
     const forward = new THREE.Vector3(-Math.sin(this._yaw), 0, -Math.cos(this._yaw));
     const right = new THREE.Vector3(Math.cos(this._yaw), 0, -Math.sin(this._yaw));
@@ -93,7 +95,7 @@ export class Player {
     this.body.velocity.z = move.z * speed;
 
     if (this.input.jump && this._onGround) {
-      this.body.velocity.y = JUMP_FORCE;
+      this.body.velocity.y = playerSettings.jumpForce;
       this.input.jump = false;
     }
   }

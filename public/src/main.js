@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import { Player } from './player.js';
+import { Player, playerSettings } from './player.js';
 import { WeaponSystem } from './weapons.js';
 import { EnemyManager } from './enemy.js';
 import { SceneManager } from './scene.js';
@@ -171,8 +171,8 @@ function onResize() {
 }
 
 function _initVolumeSliders() {
-  const ids = ['master', 'fire', 'reload', 'enemy', 'effects', 'music'];
-  ids.forEach(cat => {
+  const volIds = ['master', 'fire', 'reload', 'enemy', 'effects', 'music'];
+  volIds.forEach(cat => {
     const slider = document.getElementById(`vol-${cat}`);
     if (!slider) return;
     slider.addEventListener('input', () => {
@@ -180,6 +180,26 @@ function _initVolumeSliders() {
       if (audio) audio.setVolume(cat, val);
       const span = slider.nextElementSibling;
       if (span) span.textContent = slider.value + '%';
+    });
+  });
+
+  const gameMap = {
+    'set-walk': { key: 'walkSpeed', mult: 1 },
+    'set-sprint': { key: 'sprintSpeed', mult: 1 },
+    'set-crouch': { key: 'crouchSpeed', mult: 1 },
+    'set-jump': { key: 'jumpForce', mult: 1 },
+    'set-sens': { key: 'mouseSensitivity', mult: 0.0005 },
+    'set-stamdr': { key: 'staminaDrain', mult: 1 },
+    'set-stamrg': { key: 'staminaRegen', mult: 1 }
+  };
+  Object.entries(gameMap).forEach(([id, cfg]) => {
+    const slider = document.getElementById(id);
+    if (!slider) return;
+    slider.addEventListener('input', () => {
+      const raw = parseInt(slider.value);
+      playerSettings[cfg.key] = raw * cfg.mult;
+      const span = slider.nextElementSibling;
+      if (span) span.textContent = raw;
     });
   });
 }
