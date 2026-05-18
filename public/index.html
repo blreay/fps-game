@@ -11,10 +11,22 @@
     <div id="title-block">
       <div id="game-subtitle">TACTICAL FPS</div>
       <h1 id="game-title">混合战场</h1>
-      <div id="game-tagline">消灭所有敌人，完成任务</div>
+      <div id="game-tagline">选择关卡，进入战场</div>
     </div>
     <nav id="menu-nav">
-      <button class="menu-btn primary" onclick="location.href='game.html'">开始战斗</button>
+      <h3 class="section-title">选择关卡</h3>
+      <div id="level-cards">
+        <div class="level-card" onclick="location.href='game.html?level=1'">
+          <div class="level-num">01</div>
+          <div class="level-name">混合战场</div>
+          <div class="level-desc">地面战 — 消灭所有敌人</div>
+        </div>
+        <div class="level-card" onclick="location.href='game.html?level=2'">
+          <div class="level-num">02</div>
+          <div class="level-name">海上决战</div>
+          <div class="level-desc">海战 — 击沉敌方舰队</div>
+        </div>
+      </div>
       <button class="menu-btn" onclick="toggleSettings()">游戏设置</button>
     </nav>
     <div id="settings-panel" class="hidden">

@@ -8,11 +8,14 @@ import { HUD } from './hud.js';
 import { AudioManager } from './audio.js';
 import { Effects } from './effects.js';
 
+const urlParams = new URLSearchParams(window.location.search);
+const CURRENT_LEVEL = parseInt(urlParams.get('level')) || 1;
+
 let renderer, scene, physicsWorld, clock;
 let player, weaponSystem, enemyManager, sceneManager, hud, audio, effects;
 let gameState = 'menu';
 let killCount = 0;
-const TOTAL_ENEMIES = 30;
+let TOTAL_ENEMIES = 30;
 
 let _ready = false;
 
@@ -57,9 +60,11 @@ async function init() {
 
   clock = new THREE.Clock();
 
+  const levelFile = CURRENT_LEVEL === 2 ? 'data/level02.json' : 'data/level01.json';
+  const weaponsFile = CURRENT_LEVEL === 2 ? 'data/weapons_level02.json' : 'data/weapons.json';
   const [weaponsData, levelData] = await Promise.all([
-    fetch('data/weapons.json').then(r => r.json()),
-    fetch('data/level01.json').then(r => r.json())
+    fetch(weaponsFile).then(r => r.json()),
+    fetch(levelFile).then(r => r.json())
   ]);
 
   hud = new HUD();
@@ -159,7 +164,12 @@ function gameLoop() {
 function winGame() {
   gameState = 'won';
   document.exitPointerLock();
-  document.getElementById('win-stats').textContent = `击杀: ${killCount} / ${TOTAL_ENEMIES}`;
+  document.getElementById('win-stats').textContent = `击杀: ${killCount}`;
+  if (CURRENT_LEVEL === 1) {
+    const btn = document.getElementById('btn-next-level');
+    btn.classList.remove('hidden');
+    btn.addEventListener('click', () => location.href = 'game.html?level=2');
+  }
   document.getElementById('screen-win').classList.remove('hidden');
   audio.playWin();
 }

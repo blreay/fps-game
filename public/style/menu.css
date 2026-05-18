@@ -17,3 +17,10 @@ body { font-family: 'Courier New', monospace; background: #0a0c08; color: #fff; 
 #settings-panel input[type=range] { accent-color: #c8a96e; }
 #controls-hint { display: flex; flex-wrap: wrap; gap: 8px 16px; justify-content: center; max-width: 600px; }
 #controls-hint span { font-size: 11px; color: #666; letter-spacing: 1px; border: 1px solid rgba(255,255,255,0.1); padding: 3px 8px; border-radius: 2px; }
+.section-title { color: #c8a96e; font-size: 14px; letter-spacing: 3px; margin-bottom: 12px; }
+#level-cards { display: flex; gap: 16px; margin-bottom: 20px; }
+.level-card { width: 180px; padding: 20px 16px; border: 1px solid #555; background: rgba(30,30,30,0.8); cursor: pointer; text-align: center; transition: all 0.2s; }
+.level-card:hover { border-color: #c8a96e; background: rgba(60,50,30,0.8); transform: translateY(-2px); }
+.level-num { color: #c8a96e; font-size: 28px; font-weight: bold; }
+.level-name { color: #fff; font-size: 16px; margin: 8px 0 4px; }
+.level-desc { color: #888; font-size: 11px; }
