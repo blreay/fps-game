@@ -1,6 +1,8 @@
 node_modules/
-public/assets/models/*
 public/assets/sounds/*
 public/assets/textures/*
 public/assets/music/*
+public/assets/models/_kenney/
+public/assets/models/*.zip
+public/assets/models/colormap.png
 *.log
